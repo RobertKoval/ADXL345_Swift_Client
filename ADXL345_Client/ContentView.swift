@@ -8,12 +8,19 @@
 import SwiftUI
 
 struct ContentView: View {
+    let wsService = WebsocketService()
+
     var body: some View {
         VStack {
             Image(systemName: "globe")
                 .imageScale(.large)
                 .foregroundStyle(.tint)
             Text("Hello, world!")
+            Button("Connect") {
+                Task {
+                    try await wsService.connect()
+                }
+            }
         }
         .padding()
     }
