@@ -21,10 +21,31 @@ struct ContentView: View {
                 .interpolationMethod(.cardinal)
             }
 
-            Text("Hello, world!")
+            Chart(wsService.combinedDataPoints.suffix(1000)) { point in
+                LineMark(x: .value("Time", point.date),
+                         y: .value("Value", point.value)
+                )
+                .interpolationMethod(.cardinal)
+            }
+
+            if (!wsService.fourier.isEmpty) {
+                Chart(wsService.fourier.suffix(1000)) { point in
+                    LineMark(x: .value("Frequency", point.frequency),
+                             y: .value("Value", point.value)
+                    )
+                    .interpolationMethod(.cardinal)
+                }
+            }
+
             Button("Connect") {
                 Task {
                     try await wsService.connect()
+                }
+            }
+
+            Button("Disconnect") {
+                Task {
+                    try await wsService.onDisconnect()
                 }
             }
         }

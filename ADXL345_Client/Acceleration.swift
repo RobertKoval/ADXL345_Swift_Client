@@ -27,6 +27,12 @@ struct Acceleration: Decodable {
     let axisZ: Double
 }
 
+struct CombinedAcceleration: Identifiable {
+    let id = UUID()
+    let date: Date
+    let value: Double
+}
+
 func unpack(_ acceleration: Acceleration) -> [AccelerationDataPoint] {
     let date = Date()
 
@@ -35,4 +41,8 @@ func unpack(_ acceleration: Acceleration) -> [AccelerationDataPoint] {
         .init(date: date, axis: .axisY, value: acceleration.axisY),
         .init(date: date, axis: .axisZ, value: acceleration.axisZ)
     ]
+}
+
+func combine(_ acceleration: Acceleration) -> CombinedAcceleration {
+    CombinedAcceleration(date: .now, value: acceleration.axisX + acceleration.axisY + acceleration.axisZ)
 }
