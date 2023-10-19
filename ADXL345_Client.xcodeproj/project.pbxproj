@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		F4AAE11C2AE1865600C094FF /* Collections in Frameworks */ = {isa = PBXBuildFile; productRef = F4AAE11B2AE1865600C094FF /* Collections */; };
+		F4AAE11E2AE1865600C094FF /* DequeModule in Frameworks */ = {isa = PBXBuildFile; productRef = F4AAE11D2AE1865600C094FF /* DequeModule */; };
+		F4AAE1202AE1865600C094FF /* OrderedCollections in Frameworks */ = {isa = PBXBuildFile; productRef = F4AAE11F2AE1865600C094FF /* OrderedCollections */; };
 		F4F239322ADC1CAA0067481D /* ADXL345_ClientApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4F239312ADC1CAA0067481D /* ADXL345_ClientApp.swift */; };
 		F4F239342ADC1CAA0067481D /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4F239332ADC1CAA0067481D /* ContentView.swift */; };
 		F4F239362ADC1CAB0067481D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F4F239352ADC1CAB0067481D /* Assets.xcassets */; };
@@ -32,7 +35,10 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F4AAE11C2AE1865600C094FF /* Collections in Frameworks */,
 				F4F239422ADC1D3E0067481D /* WebSocketKit in Frameworks */,
+				F4AAE1202AE1865600C094FF /* OrderedCollections in Frameworks */,
+				F4AAE11E2AE1865600C094FF /* DequeModule in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -95,6 +101,9 @@
 			name = ADXL345_Client;
 			packageProductDependencies = (
 				F4F239412ADC1D3E0067481D /* WebSocketKit */,
+				F4AAE11B2AE1865600C094FF /* Collections */,
+				F4AAE11D2AE1865600C094FF /* DequeModule */,
+				F4AAE11F2AE1865600C094FF /* OrderedCollections */,
 			);
 			productName = ADXL345_Client;
 			productReference = F4F2392E2ADC1CAA0067481D /* ADXL345_Client.app */;
@@ -126,6 +135,7 @@
 			mainGroup = F4F239252ADC1CA90067481D;
 			packageReferences = (
 				F4F239402ADC1D3E0067481D /* XCRemoteSwiftPackageReference "websocket-kit" */,
+				F4AAE11A2AE1865600C094FF /* XCRemoteSwiftPackageReference "swift-collections" */,
 			);
 			productRefGroup = F4F2392F2ADC1CAA0067481D /* Products */;
 			projectDirPath = "";
@@ -300,7 +310,7 @@
 				"INFOPLIST_KEY_UIStatusBarStyle[sdk=iphonesimulator*]" = UIStatusBarStyleDefault;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.5;
 				LD_RUNPATH_SEARCH_PATHS = "@executable_path/Frameworks";
 				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = "@executable_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 13.6;
@@ -338,7 +348,7 @@
 				"INFOPLIST_KEY_UIStatusBarStyle[sdk=iphonesimulator*]" = UIStatusBarStyleDefault;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.5;
 				LD_RUNPATH_SEARCH_PATHS = "@executable_path/Frameworks";
 				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = "@executable_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 13.6;
@@ -377,6 +387,14 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
+		F4AAE11A2AE1865600C094FF /* XCRemoteSwiftPackageReference "swift-collections" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/apple/swift-collections.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.0.5;
+			};
+		};
 		F4F239402ADC1D3E0067481D /* XCRemoteSwiftPackageReference "websocket-kit" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/vapor/websocket-kit";
@@ -388,6 +406,21 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		F4AAE11B2AE1865600C094FF /* Collections */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = F4AAE11A2AE1865600C094FF /* XCRemoteSwiftPackageReference "swift-collections" */;
+			productName = Collections;
+		};
+		F4AAE11D2AE1865600C094FF /* DequeModule */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = F4AAE11A2AE1865600C094FF /* XCRemoteSwiftPackageReference "swift-collections" */;
+			productName = DequeModule;
+		};
+		F4AAE11F2AE1865600C094FF /* OrderedCollections */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = F4AAE11A2AE1865600C094FF /* XCRemoteSwiftPackageReference "swift-collections" */;
+			productName = OrderedCollections;
+		};
 		F4F239412ADC1D3E0067481D /* WebSocketKit */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = F4F239402ADC1D3E0067481D /* XCRemoteSwiftPackageReference "websocket-kit" */;
