@@ -14,12 +14,23 @@ struct ContentView: View {
 
     var body: some View {
         VStack {
-            ConnectView(url: $wsAddress) {
+            ConnectView(url: $wsAddress, connectionState: $wsService.connectionState) {
                 Task {
-                    try await wsService.onConnect()
+                    do {
+                        try await wsService.onConnect()
+                    } catch {
+                        print(error)
+                    }
+                }
+            } onDisconnect: {
+                Task {
+                    do {
+                        try await wsService.onDisconnect()
+                    } catch {
+                        print(error)
+                    }
                 }
             }
-            .disabled(wsService.isConnected)
 
             Picker("Record Options", selection: $wsService.recordOptions) {
                 ForEach([RecordOptions.combined, .splitted, .all], id: \.self) { option in
@@ -33,7 +44,6 @@ struct ContentView: View {
                 }
             }
             .pickerStyle(SegmentedPickerStyle())
-            .disabled(wsService.isConnected)
 
             Picker("Sample Size", selection: $wsService.recordingSize) {
                 Text("128").tag(128)
@@ -43,16 +53,13 @@ struct ContentView: View {
 
             }
             .pickerStyle(SegmentedPickerStyle())
-            .padding()
-            .disabled(wsService.isConnected)
-
 
             if wsService.recordOptions.contains(.combined) {
                 Chart(wsService.combinedDataPoints) { point in
                     LineMark(x: .value("Time", point.date),
                              y: .value("Value", point.value)
                     )
-                    .interpolationMethod(.cardinal)
+                    .interpolationMethod(.catmullRom)
                 }
                 .padding()
             }
@@ -67,48 +74,46 @@ struct ContentView: View {
                 }
                 .padding()
             }
-
-            Button("Disconnect") {
-                Task {
-                    try await wsService.onDisconnect()
-                }
-            }
-            .disabled(!wsService.isConnected)
         }
         .padding()
     }
 }
 
 struct ConnectView: View {
-    enum IPAddressField: Hashable {
-        case focused
-    }
-
-    @FocusState var focusField: IPAddressField?
     @Binding var url: String
+    @Binding var connectionState: ConnectionState
     let onConnect: () -> Void
+    let onDisconnect: () -> Void
+    @FocusState var focusField: Bool
 
     var body: some View {
         HStack {
-            Section {
                 TextField("URL:Port", text: $url)
-                    .focused($focusField, equals: .focused)
+                    .textFieldStyle(.roundedBorder)
+                    .focused($focusField, equals: true)
+                    .disabled(connectionState == .connected)
+                    .disabled(connectionState == .connecting)
 #if os(iOS)
                     .keyboardType(.numbersAndPunctuation)
 #endif
-            }
 
-            Button("Connect") {
-                onConnect()
+            if connectionState == .connected {
+                Button("Disconnect") {
+                    onDisconnect()
+                }
+                .disabled(connectionState == .disconnecting)
+            } else {
+                Button("Connect") {
+                    onConnect()
+                }
+                .disabled(url.isEmpty)
+                .disabled(connectionState == .connecting)
             }
-            .disabled(url.isEmpty)
         }
-
         .onAppear(perform: {
-
 #if os(macOS)  // TODO: How to disable focused by default?
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-                focusField = nil
+                focusField = false
             }
 #endif
         })

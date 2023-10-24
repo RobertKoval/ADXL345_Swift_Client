@@ -34,18 +34,26 @@ struct RecordOptions: OptionSet, Equatable, Hashable, Identifiable {
     static let all: RecordOptions = [.combined, .splitted]
 }
 
+enum ConnectionState {
+    case disconnected
+    case connecting
+    case connected
+    case disconnecting
+}
+
 @MainActor
 class WebsocketService: ObservableObject {
-    var server: String {
-        "ws://\(UserDefaults.standard.string(forKey: UserDefaultsKeys.wsAddress.rawValue) ?? UserDefaultsKeys.wsAddress.defaultValue)"
-    }
-
     @Published var dataPoints: Deque<AccelerationDataPoint> = []
     @Published var combinedDataPoints: Deque<CombinedAcceleration> = []
     @Published var recordingSize: Int = 128
     @Published var recordOptions: RecordOptions = .combined
-    @Published var isConnected = false
+    @Published var connectionState: ConnectionState = .disconnected
+
     var ws: WebSocket? = nil
+
+    var server: String {
+        "ws://\(UserDefaults.standard.string(forKey: UserDefaultsKeys.wsAddress.rawValue) ?? UserDefaultsKeys.wsAddress.defaultValue)"
+    }
 
     @Sendable
     func onEvent(_ ws: WebSocket, _ json: String) async -> Void {
@@ -69,22 +77,29 @@ class WebsocketService: ObservableObject {
     func onConnect() async throws  {
         self.dataPoints = []
         self.combinedDataPoints = []
+        self.connectionState = .connecting
 
         ws = try await withCheckedThrowingContinuation { continuation in
-            do {
-                try WebSocket.connect(to: server, on: MultiThreadedEventLoopGroup.singleton) { ws in
-                    continuation.resume(returning: ws)
-                }.wait()
-            } catch {
-                continuation.resume(throwing: error)
+            Task {
+                do {
+                    try await  WebSocket.connect(to: server, on: MultiThreadedEventLoopGroup.singleton) { ws in
+                        continuation.resume(returning: ws)
+                    }.get()
+
+
+                } catch {
+                    continuation.resume(throwing: error)
+                    connectionState = .disconnected
+                }
             }
         }
         ws?.onText(onEvent)
-        isConnected = true
+        self.connectionState = .connected
     }
 
     func onDisconnect() async throws {
+        defer { self.connectionState = .disconnected }
+        self.connectionState = .disconnecting
         try await ws?.close()
-        isConnected = false
     }
 }
